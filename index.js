@@ -102,7 +102,6 @@ function tickEvent() {
    	  console.log(hero.name + ' died and his quest is over.');
    	  console.log('Here are the battle stats:', stats);
    	  console.log('********************************************');
-   	  world.clockInterval = 0;
    }
 
    if (mob.length == 0) {
