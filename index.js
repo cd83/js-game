@@ -213,7 +213,7 @@ function attack(attacker, defender) {
 				console.log('Our hero, ' + hero.name + ', has gained +9 health from the CRITICAL STRIKE on ' + defender.name);
 				hero.health += 9;
 			} else {
-				critDamage = roll(5, 10);
+				critDamage = roll(5, 14);
 			}
 		    
 			console.log ('CRITICAL STRIKE!! For ' + attacker.name + ' against ' + defender.name);
