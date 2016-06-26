@@ -172,10 +172,10 @@ worldClock();
 
 
 function spawn(enemy) {
-	var eliteRoll = roll(1, 1000);
+	var eliteRoll = roll(1, 500);
 	var eliteMultiplier = 1;
 
-	if (eliteRoll > 999) {
+	if (eliteRoll > 495) {
 		eliteMultiplier = 2;
         //enemy.name += ' Elite';
 		console.log(' ');
