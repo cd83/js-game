@@ -158,10 +158,23 @@ worldClock();
 
 
 function spawn(enemy) {
-	enemy.health = roll(15, 40);
-	enemy.strength = roll(0, 5);
-	enemy.dodge = roll(0, 5);
-	enemy.crit = roll(1, 8);
+	var eliteRoll = roll(1, 1000);
+	var eliteMultiplier = 1;
+
+	if (eliteRoll == 999) {
+		eliteMultiplier = 2;
+
+		console.log(' ');
+		console.log('***************************');
+		console.log('****  ELITE SPAWNED!!  ****')
+		console.log('***************************');
+		console.log(' ');
+	}
+
+	enemy.health = roll(15 * eliteMultiplier, 40 * eliteMultiplier);
+	enemy.strength = roll(0, 5 * eliteMultiplier);
+	enemy.dodge = roll(0, 5 * eliteMultiplier);
+	enemy.crit = roll(1, 8 * eliteMultiplier);
 	return enemy 
 }
 
