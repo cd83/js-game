@@ -1,5 +1,5 @@
 var world = {
-   clockInterval: 1000,
+   clockInterval: 0,
    rollMin: 0,
    rollMax: 100,
    xpLevelUp: 1000
@@ -9,6 +9,7 @@ var inBattle = false;
 var battleCounter = 0;
 
 var stats = {
+	eliteKills: 0,
 	kills: 0,
 	attacks: 0,
 	defended: 0,
@@ -111,18 +112,18 @@ function tickEvent() {
 		console.log('*****************************');
 		console.log(' ');
    	  console.log('The soul siphon has been cast to remove 60 health points from our hero but the reward is an additonal Crit point.');
-   	  hero.health = 90;
+   	  hero.health -= 60;
 
-   	  if (hero.crit <= 22) {
+   	  if (hero.crit <= 25) {
    	  	 hero.crit +=  1;
    	  } else {
    	  	// crit is too high.  Roll additional life damage.
-   	  	var additionalSoulSiphonDamage = roll(5, 42);
+   	  	var additionalSoulSiphonDamage = roll(5, 12);
    	  	console.log('Soul Siphon has hit +' + additionalSoulSiphonDamage);
    	  	hero.health -= additionalSoulSiphonDamage;
    	  	console.log(hero.name + ' has ' + hero.health + ' health remaining.');
-   	  	var critToRemove = roll(5, 17);
-   	  	console.log('A lighning strike from the gods has removed +' + critToRemove + ' critical strike points from our hero.');
+   	  	var critToRemove = roll(5, 12);
+   	  	console.log('A lightning strike from the gods has removed +' + critToRemove + ' critical strike points from our hero.');
    	  	hero.crit -= critToRemove;
    	  }
    	  
@@ -130,7 +131,7 @@ function tickEvent() {
 
    if (mob.length == 0) {
    	  // the mob is empty, generate a new one
-   	  mob.push(spawn(orc));
+   	  mob.push(new spawn(orc));
    	  console.log('********************************************');
    	  console.log('A new enemy has spawned', mob[0]);
    	  console.log('********************************************');
@@ -141,12 +142,20 @@ function tickEvent() {
    	   // *********** did the enemy die? **********
 	   if (mob[0].health <= 0) {
 	   	  stats.kills += 1;
+	   	  if (mob[0].isElite) { 
+	   	  	stats.eliteKills += 1 
+	   	  	console.log('Our hero, ' + hero.name + ', has gained +16 by feasting on the blood of ' + mob[0].name);
+		  	hero.health += 16;
+	   	  } else { 
+	   	  	console.log('Our hero, ' + hero.name + ', has gained +25 by feasting on the blood of ' + mob[0].name + ' Elite');
+		  	hero.health += 25;
+	   	  }
 	   	  console.log('********************************************');
 	   	  console.log('Our hero, ' + hero.name + ', killed ' + mob[0].name + '!  Adding to the total body account of ' + stats.kills);
 	   	  console.log('********************************************');
 
-	   	  console.log('Our hero, ' + hero.name + ', has gained +16 by feasting on the blood of ' + mob[0].name);
-		  hero.health += 16;
+
+
 
 	   	  mob.splice(0, 1);
 	   	  inBattle = false;
@@ -166,14 +175,20 @@ function spawn(enemy) {
 	var eliteRoll = roll(1, 1000);
 	var eliteMultiplier = 1;
 
-	if (eliteRoll == 999) {
+	if (eliteRoll > 999) {
 		eliteMultiplier = 2;
-        enemy.name = enemy.name + ' Elite';
+        //enemy.name += ' Elite';
 		console.log(' ');
 		console.log('***************************');
 		console.log('****  ELITE SPAWNED!!  ****')
 		console.log('***************************');
 		console.log(' ');
+		enemy.isElite = true;
+	} else {
+		// added because of strange bug
+		// variables are leaking. :-(
+		enemy.isElite = false;
+		//enemy.name = orc.name;
 	}
 
 	enemy.health = roll(15 * eliteMultiplier, 40 * eliteMultiplier);
