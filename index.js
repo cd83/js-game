@@ -131,6 +131,10 @@ function tickEvent() {
 
    if (mob.length == 0) {
    	  // the mob is empty, generate a new one
+   	  
+   	  // reset this value
+   	  orc.isElite = false;
+
    	  mob.push(new spawn(orc));
    	  console.log('********************************************');
    	  console.log('A new enemy has spawned', mob[0]);
@@ -142,7 +146,8 @@ function tickEvent() {
    	   // *********** did the enemy die? **********
 	   if (mob[0].health <= 0) {
 	   	  stats.kills += 1;
-	   	  if (mob[0].isElite) { 
+
+	   	  if (mob[0].isElite == true ) { 
 	   	  	stats.eliteKills += 1 
 	   	  	console.log('Our hero, ' + hero.name + ', has gained +16 by feasting on the blood of ' + mob[0].name);
 		  	hero.health += 16;
@@ -153,9 +158,6 @@ function tickEvent() {
 	   	  console.log('********************************************');
 	   	  console.log('Our hero, ' + hero.name + ', killed ' + mob[0].name + '!  Adding to the total body account of ' + stats.kills);
 	   	  console.log('********************************************');
-
-
-
 
 	   	  mob.splice(0, 1);
 	   	  inBattle = false;
