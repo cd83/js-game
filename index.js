@@ -115,7 +115,7 @@ function tickEvent() {
    	  	var additionalSoulSiphonDamage = roll(5, 42);
    	  	console.log('Soul Siphon has hit +' + additionalSoulSiphonDamage);
    	  	hero.health -= additionalSoulSiphonDamage;
-   	  	console.log(hero.name + ' has ' + heroHealth + ' health remaining.');
+   	  	console.log(hero.name + ' has ' + hero.health + ' health remaining.');
    	  	var critToRemove = roll(5, 17);
    	  	console.log('A lighning strike from the gods has removed +' + critToRemove + ' critical strike points from our hero.');
    	  	hero.crit -= critToRemove;
