@@ -105,6 +105,11 @@ function tickEvent() {
    	  console.log('Here are the battle stats:', stats);
    	  console.log('********************************************');
    } else if (hero.health >= 150) {
+		console.log(' ');
+		console.log('*****************************');
+		console.log('****  SOUL SIPHON CAST!  ****')
+		console.log('*****************************');
+		console.log(' ');
    	  console.log('The soul siphon has been cast to remove 60 health points from our hero but the reward is an additonal Crit point.');
    	  hero.health = 90;
 
