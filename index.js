@@ -241,7 +241,7 @@ function attack(attacker, defender) {
 		// attack was not blocked
 		if (isCrit) {
 			var critDamage = 0;
-			if(attacker.name == hero.name) {
+			if(attacker.name == hero.name || attacker.isElite) {
 				critDamage = roll(10, 30);	
 				console.log('Our hero, ' + hero.name + ', has gained +9 health from the CRITICAL STRIKE on ' + defender.name);
 				hero.health += 9;
