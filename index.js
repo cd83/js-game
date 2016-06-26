@@ -163,7 +163,7 @@ function spawn(enemy) {
 
 	if (eliteRoll == 999) {
 		eliteMultiplier = 2;
-
+        enemy.name = enemy.name + ' Elite';
 		console.log(' ');
 		console.log('***************************');
 		console.log('****  ELITE SPAWNED!!  ****')
