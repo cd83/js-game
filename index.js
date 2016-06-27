@@ -153,11 +153,11 @@ function tickEvent() {
 
 	   	  if (mob[0].isElite == true ) { 
 	   	  	stats.eliteKills += 1 
-	   	  	console.log(hero.name + ': ' + 'Our hero, ' + hero.name + ', has gained +10 by feasting on the blood of ' + mob[0].name);
-		  	hero.health += 10;
-	   	  } else { 
 	   	  	console.log(hero.name + ': ' + 'Our hero, ' + hero.name + ', has gained +25 by feasting on the blood of ' + mob[0].name + ' Elite');
 		  	hero.health += 25;
+	   	  } else { 
+	   	  	console.log(hero.name + ': ' + 'Our hero, ' + hero.name + ', has gained +10 by feasting on the blood of ' + mob[0].name);
+		  	hero.health += 10;
 	   	  }
 	   	  console.log('********************************************');
 	   	  console.log('Our hero, ' + hero.name + ', killed ' + mob[0].name + '!  Adding to the total body count of ' + stats.kills);
