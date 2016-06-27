@@ -177,7 +177,7 @@ function spawn(enemy) {
 	var eliteRoll = roll(1, 200);
 	var eliteMultiplier = 1;
 
-	if (eliteRoll > 190) {
+	if (eliteRoll > 182) {
 		eliteMultiplier = 2;
         //enemy.name += ' Elite';
 		console.log(' ');
@@ -252,7 +252,6 @@ function attack(attacker, defender) {
 			console.log('Our hero, ' + hero.name + ', has gained +6 health from the blocking the attack on ' + attacker.name);
 			hero.health += 6;
 		}
-
 	} else {
 		// attack was not blocked
 		if (isCrit) {
