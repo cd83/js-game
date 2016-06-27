@@ -1,5 +1,5 @@
 var world = {
-   clockInterval: 0,
+   clockInterval: 1000,
    rollMin: 0,
    rollMax: 100,
    xpLevelUp: 1000,
@@ -160,7 +160,7 @@ function tickEvent() {
 		  	hero.health += 25;
 	   	  }
 	   	  console.log('********************************************');
-	   	  console.log('Our hero, ' + hero.name + ', killed ' + mob[0].name + '!  Adding to the total body account of ' + stats.kills);
+	   	  console.log('Our hero, ' + hero.name + ', killed ' + mob[0].name + '!  Adding to the total body count of ' + stats.kills);
 	   	  console.log('********************************************');
 
 	   	  mob.splice(0, 1);
