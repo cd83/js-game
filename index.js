@@ -144,13 +144,13 @@ function tickEvent() {
    	  inBattle = true;
 
    	   // *********** did the enemy die? **********
-	   if (mob[0].health <= 0) {
+	   if (mob[0].health <= 0 && hero.health > 0) {
 	   	  stats.kills += 1;
 
 	   	  if (mob[0].isElite == true ) { 
 	   	  	stats.eliteKills += 1 
-	   	  	console.log('Our hero, ' + hero.name + ', has gained +16 by feasting on the blood of ' + mob[0].name);
-		  	hero.health += 16;
+	   	  	console.log('Our hero, ' + hero.name + ', has gained +10 by feasting on the blood of ' + mob[0].name);
+		  	hero.health += 10;
 	   	  } else { 
 	   	  	console.log('Our hero, ' + hero.name + ', has gained +25 by feasting on the blood of ' + mob[0].name + ' Elite');
 		  	hero.health += 25;
@@ -174,10 +174,10 @@ worldClock();
 
 
 function spawn(enemy) {
-	var eliteRoll = roll(1, 500);
+	var eliteRoll = roll(1, 200);
 	var eliteMultiplier = 1;
 
-	if (eliteRoll > 495) {
+	if (eliteRoll > 190) {
 		eliteMultiplier = 2;
         //enemy.name += ' Elite';
 		console.log(' ');
@@ -204,6 +204,20 @@ function attack(attacker, defender) {
 	var damage = roll(0, 10);
 	var defense = roll(0, 10);
 	var isCrit = false;
+
+	if (damage == 0) {
+		console.log ('The attack by ' + attacker.name + ' missed ' + defender.name);
+		if (attacker.name == hero.name) {
+			stats.misses += 1;
+		}
+	} else {
+		if (defense > damage) {
+			console.log ('The attack by ' + attacker.name + ' was defended by ' + defender.name);
+			if (attacker.name == hero.name) {
+				stats.defended += 1;
+			}
+		}
+	}
 
 	damage = damage - defense;
 
@@ -235,8 +249,8 @@ function attack(attacker, defender) {
 		console.log ('The attack by ' + attacker.name + ' was blocked by ' + defender.name);
 		if (defender.name == hero.name) {
 			stats.blocks += 1;
-			console.log('Our hero, ' + hero.name + ', has gained +8 health from the blocking the attack on ' + attacker.name);
-			hero.health += 8;
+			console.log('Our hero, ' + hero.name + ', has gained +6 health from the blocking the attack on ' + attacker.name);
+			hero.health += 6;
 		}
 
 	} else {
@@ -256,18 +270,12 @@ function attack(attacker, defender) {
 		}
 	}
 
-	if (damage == 0) {
-		console.log ('The attack by ' + attacker.name + ' missed ' + defender.name);
-		if (attacker.name == hero.name) {
-			stats.misses += 1;
-		}
-
-	} else {
+	if (damage != 0) {
 		console.log ('The attack by ' + attacker.name + ' hit ' + defender.name + ' for +' + damage + ' damage.');
 		if (attacker.name == hero.name) {
 			stats.attacks += 1;
 
-			if (damage >= 5 && isCrit == false) {
+			if (damage >= 10 && isCrit == false) {
 				console.log('Our hero, ' + hero.name + ', has gained +1 health from the hit on ' + defender.name);
 				hero.health += 1;
 			}
