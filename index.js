@@ -71,7 +71,7 @@ function tickEvent() {
    	  battleCounter += 1;
 
       if (battleCounter == 1) {
-      	console.log('The hero is engaged in battle with an', mob[0].name);
+      	console.log(hero.name + ': ' + 'The hero is engaged in battle with an', mob[0].name);
       	console.log(' ');
       }
 
@@ -93,7 +93,7 @@ function tickEvent() {
 
    } else {
    	  // reset the counters
-   	  console.log('Our hero, ' + hero.name + ', is continuing his quest and is out of battle.');
+   	  console.log(hero.name + ': ' + 'Our hero, ' + hero.name + ', is continuing his quest and is out of battle.');
    	  console.log(' ');
    	  battleCounter = 0;
    }
@@ -111,7 +111,7 @@ function tickEvent() {
 		console.log('****  SOUL SIPHON CAST!  ****')
 		console.log('*****************************');
 		console.log(' ');
-   	  console.log('The soul siphon has been cast to remove 60 health points from our hero but the reward is an additonal Crit point.');
+   	  console.log(hero.name + ': ' + 'The soul siphon has been cast to remove 60 health points from our hero but the reward is an additonal Crit point.');
    	  hero.health -= 60;
 
    	  if (hero.crit <= 25) {
@@ -119,11 +119,11 @@ function tickEvent() {
    	  } else {
    	  	// crit is too high.  Roll additional life damage.
    	  	var additionalSoulSiphonDamage = roll(5, 12);
-   	  	console.log('Soul Siphon has hit +' + additionalSoulSiphonDamage);
+   	  	console.log(hero.name + ': ' + 'Soul Siphon has hit +' + additionalSoulSiphonDamage);
    	  	hero.health -= additionalSoulSiphonDamage;
    	  	console.log(hero.name + ' has ' + hero.health + ' health remaining.');
    	  	var critToRemove = roll(5, 12);
-   	  	console.log('A lightning strike from the gods has removed +' + critToRemove + ' critical strike points from our hero.');
+   	  	console.log(hero.name + ': ' + 'A lightning strike from the gods has removed +' + critToRemove + ' critical strike points from our hero.');
    	  	hero.crit -= critToRemove;
    	  }
    	  
@@ -149,10 +149,10 @@ function tickEvent() {
 
 	   	  if (mob[0].isElite == true ) { 
 	   	  	stats.eliteKills += 1 
-	   	  	console.log('Our hero, ' + hero.name + ', has gained +10 by feasting on the blood of ' + mob[0].name);
+	   	  	console.log(hero.name + ': ' + 'Our hero, ' + hero.name + ', has gained +10 by feasting on the blood of ' + mob[0].name);
 		  	hero.health += 10;
 	   	  } else { 
-	   	  	console.log('Our hero, ' + hero.name + ', has gained +25 by feasting on the blood of ' + mob[0].name + ' Elite');
+	   	  	console.log(hero.name + ': ' + 'Our hero, ' + hero.name + ', has gained +25 by feasting on the blood of ' + mob[0].name + ' Elite');
 		  	hero.health += 25;
 	   	  }
 	   	  console.log('********************************************');
@@ -171,7 +171,6 @@ function roll(min, max){
 
 // initialize the world clock
 worldClock();
-
 
 function spawn(enemy) {
 	var eliteRoll = roll(1, 200);
@@ -206,13 +205,13 @@ function attack(attacker, defender) {
 	var isCrit = false;
 
 	if (damage == 0) {
-		console.log ('The attack by ' + attacker.name + ' missed ' + defender.name);
+		console.log (attacker.name + ': ' + 'The attack by ' + attacker.name + ' missed ' + defender.name);
 		if (attacker.name == hero.name) {
 			stats.misses += 1;
 		}
 	} else {
 		if (defense > damage) {
-			console.log ('The attack by ' + attacker.name + ' was defended by ' + defender.name);
+			console.log (defender.name + ': ' + 'The attack by ' + attacker.name + ' was defended by ' + defender.name);
 			if (attacker.name == hero.name) {
 				stats.defended += 1;
 			}
@@ -246,10 +245,10 @@ function attack(attacker, defender) {
 		// attack was blocked.
 		damage = 0;
 
-		console.log ('The attack by ' + attacker.name + ' was blocked by ' + defender.name);
+		console.log (defender.name + ': ' + 'The attack by ' + attacker.name + ' was blocked by ' + defender.name);
 		if (defender.name == hero.name) {
 			stats.blocks += 1;
-			console.log('Our hero, ' + hero.name + ', has gained +6 health from the blocking the attack on ' + attacker.name);
+			console.log(hero.name + ': ' + 'Our hero, ' + hero.name + ', has gained +6 health from the blocking the attack on ' + attacker.name);
 			hero.health += 6;
 		}
 	} else {
@@ -258,19 +257,19 @@ function attack(attacker, defender) {
 			var critDamage = 0;
 			if(attacker.name == hero.name || attacker.isElite) {
 				critDamage = roll(10, 30);	
-				console.log('Our hero, ' + hero.name + ', has gained +9 health from the CRITICAL STRIKE on ' + defender.name);
+				console.log(hero.name + ': ' + 'Our hero, ' + hero.name + ', has gained +9 health from the CRITICAL STRIKE on ' + defender.name);
 				hero.health += 9;
 			} else {
 				critDamage = roll(5, 14);
 			}
 		    
-			console.log ('CRITICAL STRIKE!! For ' + attacker.name + ' against ' + defender.name);
+			console.log (attacker.name + ': ' + 'CRITICAL STRIKE!! For ' + attacker.name + ' against ' + defender.name);
 			damage += critDamage;
 		}
 	}
 
 	if (damage != 0) {
-		console.log ('The attack by ' + attacker.name + ' hit ' + defender.name + ' for +' + damage + ' damage.');
+		console.log (attacker.name + ': ' + 'The attack by ' + attacker.name + ' hit ' + defender.name + ' for +' + damage + ' damage.');
 		if (attacker.name == hero.name) {
 			stats.attacks += 1;
 
