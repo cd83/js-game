@@ -2,7 +2,8 @@ var world = {
    clockInterval: 0,
    rollMin: 0,
    rollMax: 100,
-   xpLevelUp: 1000
+   xpLevelUp: 1000,
+   tickCount: 0
 };
 
 var inBattle = false;
@@ -15,7 +16,8 @@ var stats = {
 	defended: 0,
 	blocks: 0,
 	misses: 0,
-    crits: 0
+    crits: 0,
+    soulSiphon: 0
 };
 
 // our hero
@@ -66,6 +68,7 @@ function tickEvent() {
    // console.log('World Clock Tick...');
    // var rollDice = roll(world.rollMin, world.rollMax);
    // console.log('You shake the dice and cast them on the table...  The roll yields the value', rollDice);
+   world.tickCount += 1;
 
    if (inBattle) {
    	  battleCounter += 1;
@@ -104,6 +107,7 @@ function tickEvent() {
    	  console.log('Our hero has fallen in battle.');
    	  console.log(hero.name + ' died and his quest is over.');
    	  console.log('Here are the battle stats:', stats);
+   	  console.log('world.tickCount: ', world.tickCount)
    	  console.log('********************************************');
    } else if (hero.health >= 150) {
 		console.log(' ');
@@ -126,7 +130,7 @@ function tickEvent() {
    	  	console.log(hero.name + ': ' + 'A lightning strike from the gods has removed +' + critToRemove + ' critical strike points from our hero.');
    	  	hero.crit -= critToRemove;
    	  }
-   	  
+   	  stats.soulSiphon += 1;
    }
 
    if (mob.length == 0) {
@@ -176,7 +180,7 @@ function spawn(enemy) {
 	var eliteRoll = roll(1, 200);
 	var eliteMultiplier = 1;
 
-	if (eliteRoll > 182) {
+	if (eliteRoll > 182 && world.tickCount > 100) {
 		eliteMultiplier = 2;
         //enemy.name += ' Elite';
 		console.log(' ');
