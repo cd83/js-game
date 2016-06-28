@@ -6,6 +6,6 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "brandon.hedge@gmail.com",
+  "author": "brandon.hedge@gmail.com, chrisdlee@gmail.com",
   "license": "MIT"
 }

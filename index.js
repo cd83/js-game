@@ -1,5 +1,5 @@
 var world = {
-   clockInterval: 1000,
+   clockInterval: 2000,
    rollMin: 0,
    rollMax: 100,
    xpLevelUp: 1000,
@@ -27,13 +27,15 @@ var hero = {
 	level: 1,
 	xp: 0,
 	crit: 5,
-	strength: 0,
-	block: 0,
+	strength: 10,
+	block: 50,
+	initiative: 10,
 	defense: {
-		armor: 0
+		armor: 10
 	},
+	weapon: "Totally Rad Sword",
 	offense: {
-		weapon: 0
+		weapon: 10
 	}
 };
 
@@ -45,13 +47,25 @@ var orc = {
 	strength: 0,
 	block: 0,
 	isElite: false,
+	initiative: 0,
+	dodge: 0,
 	defense: {
 		armor: 0
 	},
+	weapon: '',
 	offense: {
 		weapon: 0
 	}
 }
+
+var weapons = [
+    'sword',
+    'axe',
+	'spiked club'
+];
+
+var getRandomWeapon = Math.floor(Math.random()*weapons.length);
+
 
 // the current mob we are battling
 var mob = [];
@@ -60,44 +74,41 @@ function worldClock() {
    if (hero.health > 0) {
       tickEvent();
    }
-
    setTimeout(worldClock, world.clockInterval);
 }
 
 function tickEvent() {
-   // console.log('World Clock Tick...');
-   // var rollDice = roll(world.rollMin, world.rollMax);
-   // console.log('You shake the dice and cast them on the table...  The roll yields the value', rollDice);
    world.tickCount += 1;
 
    if (inBattle) {
    	  battleCounter += 1;
 
       if (battleCounter == 1) {
-      	console.log(hero.name + ': ' + 'The hero is engaged in battle with an', mob[0].name);
-      	console.log(' ');
+		  // console.log('********************************************');
+		  // console.log(hero.name + "'s stats are:");
+		  // console.log (hero);
+		  // console.log("Quest stats:")
+		  // console.log(stats)
+	   // 	  console.log('********************************************');
+	   // 	  console.log(' ');
+		  // console.log('An ' + mob[0].name + " attacks from the shadows!" );
+	   // 	  console.log('********************************************');
+	   // 	  console.log("Enemy stats:");
+		  // console.log (mob[0]);
+	   // 	  console.log('********************************************');
+	   // 	  console.log(' ');
       }
 
       // **************
       // ** ATACK!!
       // **************
 
-      var firstStrike = roll(0, 1);
-      if (firstStrike == 0) {
-      	// if Zero, our hero get's to attack first this tick
-      	mob[0].health -= attack(hero, mob[0]);
-      	hero.health -= attack(mob[0], hero);
-      } else {
-      	hero.health -= attack(mob[0], hero);
-      	mob[0].health -= attack(hero, mob[0]);
-      }
-      console.log(' ');
-
+	  attack(mob[0], hero)
 
    } else {
    	  // reset the counters
-   	  console.log(hero.name + ': ' + 'Our hero, ' + hero.name + ', is continuing his quest and is out of battle.');
-   	  console.log(' ');
+   	  // console.log(hero.name + ': ' + 'Our hero, ' + hero.name + ', is continuing his quest and is out of battle.');
+   	  // console.log(' ');
    	  battleCounter = 0;
    }
 
@@ -131,6 +142,7 @@ function tickEvent() {
    	  	hero.crit -= critToRemove;
    	  }
    	  stats.soulSiphon += 1;
+   	  console.log('********************************************');
    }
 
    if (mob.length == 0) {
@@ -140,8 +152,15 @@ function tickEvent() {
    	  orc.isElite = false;
 
    	  mob.push(new spawn(orc));
+	  console.log(hero.name + "'s stats are:");
+	  console.log (hero);
+	  console.log("Quest stats:")
+	  console.log(stats)
    	  console.log('********************************************');
-   	  console.log('A new enemy has spawned', mob[0]);
+   	  console.log(' ');
+   	  console.log('********************************************');
+   	  console.log("A new enemy has spawned...");
+	  console.log (mob[0]);
    	  console.log('********************************************');
    	  console.log(' ');
    } else {
@@ -151,31 +170,24 @@ function tickEvent() {
 	   if (mob[0].health <= 0 && hero.health > 0) {
 	   	  stats.kills += 1;
 
-	   	  console.log('****************************************************************************************');
-	   	  console.log('****************************************************************************************');
-          console.log(' ');
 	   	  if (mob[0].isElite == true ) { 
 	   	  	stats.eliteKills += 1 
-	   	  	console.log(hero.name + ': ' + 'Our hero, ' + hero.name + ', has gained +25 by feasting on the blood of ' + mob[0].name + ' Elite');
-		  	hero.health += 25;
+	   	  	//console.log(hero.name + ': ' + 'Our hero, ' + hero.name + ', has gained +25 by feasting on the blood of ' + mob[0].name + ' Elite');
+		  	
+		  	// hero.health += 25;
 	   	  } else { 
-	   	  	console.log(hero.name + ': ' + 'Our hero, ' + hero.name + ', has gained +10 by feasting on the blood of ' + mob[0].name);
-		  	hero.health += 10;
+	   	  	//console.log(hero.name + ': ' + 'Our hero, ' + hero.name + ', has gained +10 by feasting on the blood of ' + mob[0].name);
+		  	// hero.health += 10;  	
 	   	  }
-	   	  console.log(' ');
-	   	  console.log(' ');
-	   	  console.log('            H    E    R    O          K    I    L    L');
-	   	  console.log(' ');
-	   	  console.log(' ');
+
 	   	  console.log('Our hero, ' + hero.name + ', killed ' + mob[0].name + '!  Adding to the total body count of ' + stats.kills);
+	   	  logHealth(hero.name);
 	   	  console.log(' ');
-	   	  console.log('****************************************************************************************');
-	   	  console.log('****************************************************************************************');
 
 	   	  mob.splice(0, 1);
 	   	  inBattle = false;
-	   }
-   }
+	   	}
+    }
 }
 
 function roll(min, max){
@@ -209,95 +221,103 @@ function spawn(enemy) {
 	enemy.strength = roll(0, 5 * eliteMultiplier);
 	enemy.dodge = roll(0, 5 * eliteMultiplier);
 	enemy.crit = roll(1, 8 * eliteMultiplier);
+}
+
+function getRandom(min, max) {
+	return Math.floor(Math.random() * (max - min) + min);
+}
+
+function roll(stat){
+	if ( stat >= getRandom(1,100) ) {
+		return true   
+	} else {
+		return false
+	}
+}
+
+// initialize the world clock
+worldClock();
+
+function spawn(enemy) {
+	enemy.health = getRandom(10, 35);
+	enemy.initiative = getRandom(1, 10);
+	enemy.strength = getRandom(2, 10);
+	enemy.dodge = getRandom(2, 8);
+	enemy.crit = getRandom(2, 8);
+	enemy.defense.armor = getRandom(2,8);
+	enemy.offense.weapon = getRandom(2,8);
+	enemy.weapon = weapons[getRandomWeapon];
 	return enemy 
 }
 
 function attack(attacker, defender) {
-	var damage = roll(0, 10);
-	var defense = roll(0, 10);
-	var isCrit = false;
-
-	if (damage == 0) {
-		console.log (attacker.name + ': ' + 'The attack by ' + attacker.name + ' missed ' + defender.name);
-		if (attacker.name == hero.name) {
-			stats.misses += 1;
-		}
-	} else {
-		if (defense > damage) {
-			console.log (defender.name + ': ' + 'The attack by ' + attacker.name + ' was defended by ' + defender.name);
-			if (attacker.name == hero.name) {
-				stats.defended += 1;
+	var damage = 0;
+	var attackerRoll = getRandom(1, attacker.initiative);
+	var defenderRoll = getRandom(1, defender.initiative);
+	// console.log(attacker.name + "'s roll is: " + attackerRoll )
+	// console.log(defender.name + "'s roll is: " + defenderRoll )
+	if ( attackerRoll > defenderRoll ) { // if attacker rolls higher
+		damage = (attackerRoll - defenderRoll) * 2;
+		if (roll(defender.block)) { // attack was blocked
+			damage = 0;
+			logDamage(defender,attacker,'block',damage)
+		} else { // attack was not blocked
+			if ( roll(attacker.crit) ) { // check for crit
+				logDamage(attacker,defender,'crit',damage)
+				increaseStatCount(attacker, "crits")
+			}
+			else { // no crit
+				logDamage(attacker,defender,'hit',damage)
 			}
 		}
-	}
-
-	damage = damage - defense;
-
-	if (damage < 0) {
-		damage = 0;
-	}
-
-	var critMax = 100;
-
-	if (attacker.name != hero.name && attacker.isElite == false) {
-		// we will sandbag the attacker if not the hero and not elite
-		critMax = 300;
-	}
-
-	var crit = roll(0, critMax);
-	if (crit >= critMax - attacker.crit) {
-		isCrit = true;
-		if (attacker.name == hero.name) {
-			stats.crits += 1;
+		defender.health -= damage
+	} else if ( defenderRoll > attackerRoll ) { // if defender rolls higher
+		damage = defender.strength + defenderRoll - attackerRoll - attacker.defense.armor
+		if ( roll(defender.crit) ) { // check for crit
+			damage = (damage + defender.crit) * 2
+			logDamage(defender,attacker,'crit',damage)
+			attacker.health -= damage
+			increaseStatCount(defender, "crits")
+		} else { // Defender counterattacks
+			logDamage(defender,attacker,'hit',damage)
+			attacker.health -= damage
 		}
+	} else { //Attacks are even, nothing happens. Log something here later.
+		console.log("CLANG!")
 	}
-
-	var block =  roll(0, 20);
-
-	if (block == 20) {
-		// attack was blocked.
-		damage = 0;
-
-		console.log (defender.name + ': ' + 'The attack by ' + attacker.name + ' was blocked by ' + defender.name);
-		if (defender.name == hero.name) {
-			stats.blocks += 1;
-			console.log(hero.name + ': ' + 'Our hero, ' + hero.name + ', has gained +6 health from the blocking the attack on ' + attacker.name);
-			hero.health += 6;
-		}
-	} else {
-		// attack was not blocked
-		if (isCrit) {
-			var critDamage = 0;
-			if(attacker.name == hero.name || attacker.isElite) {
-				critDamage = roll(10, 30);	
-				console.log(hero.name + ': ' + 'Our hero, ' + hero.name + ', has gained +9 health from the CRITICAL STRIKE on ' + defender.name);
-				hero.health += 9;
-			} else {
-				critDamage = roll(5, 14);
-			}
-		    
-			console.log (attacker.name + ': ' + 'CRITICAL STRIKE!! For ' + attacker.name + ' against ' + defender.name);
-			damage += critDamage;
-		}
-	}
-
-	if (damage != 0) {
-		console.log (attacker.name + ': ' + 'The attack by ' + attacker.name + ' hit ' + defender.name + ' for +' + damage + ' damage.');
-		if (attacker.name == hero.name) {
-			stats.attacks += 1;
-
-			if (damage >= 10 && isCrit == false) {
-				console.log('Our hero, ' + hero.name + ', has gained +1 health from the hit on ' + defender.name);
-				hero.health += 1;
-			}
-		} 
-
-		if (defender.name == hero.name) {
-			var heroHealth = (hero.health - damage);
-			if (heroHealth > 0) {
-				console.log(hero.name + ' has ' + heroHealth + ' health remaining.');
-			}
-		}
-	}
-	return damage;
 }
+
+function logHealth(who) {
+	if (who.health > 0 ) {
+		console.log( who.name + " has " + who.health + " health remaining." )
+	}
+}
+
+function increaseStatCount(who, stat) {
+	if ( who.name == hero.name ) {
+		switch(stat) {
+			case 'blocks': stats.blocks += 1;
+				break;
+			case 'crits': stats.crits+= 1;
+				break;
+			case 'attacks': stats.attacks += 1;
+				break;
+			case 'kills': stats.kills += 1;
+			default: return
+		}
+	} else {
+		return
+	}
+}
+
+function logDamage(whoIsHitting, whoIsGettingHit, typeOfHit, damage){
+	switch(typeOfHit) {
+		case 'block': console.log (whoIsGettingHit.name + '(' + whoIsGettingHit.health + ") BLOCKS attack by " + whoIsHitting.name + '.');
+			break;
+		case 'crit': console.log (whoIsHitting.name + '(' + whoIsHitting.health + ") CRITS " + whoIsGettingHit.name + '(' + whoIsGettingHit.health + ') for ' + damage + ' damage with their ' + whoIsHitting.weapon);
+			break; 
+		case 'hit': console.log (whoIsHitting.name + '(' + whoIsHitting.health + ") hits " + whoIsGettingHit.name + '(' + whoIsGettingHit.health + ') for ' + damage + ' damage with their ' + whoIsHitting.weapon);
+			break; 
+	}
+}
+
