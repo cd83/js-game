@@ -5,67 +5,24 @@
 // - experience process to level up player
 // - split out files
 
-var world = {
-   clockInterval: 2000,
-   rollMin: 0,
-   rollMax: 100,
-   xpLevelUp: 1000,
-   tickCount: 0,
-   waveCounter: 0,
-   wave: 1
-};
+var world = require('./world/settings');
+world = world.settings;
 
 var inBattle = false;
 var battleCounter = 0;
 
-var stats = {
-	eliteKills: 0,
-	kills: 0,
-	attacks: 0,
-	defended: 0,
-	blocks: 0,
-	misses: 0,
-    crits: 0,
-    soulSiphon: 0
-};
+var stats = require('./stats/settings');
+stats = stats.settings;
 
 // our hero
-var hero = {
-	name: "Foff",
-	health: 100,
-	level: 1,
-	xp: 0,
-	crit: 5,
-	strength: 10,
-	block: 50,
-	initiative: 10,
-	defense: {
-		armor: 10
-	},
-	weapon: "Totally Rad Sword",
-	offense: {
-		weapon: 10
-	}
-};
+var hero = require('./heroes/foff');
+hero = hero.hero;
 
-var orc = {
-	name: "Orc",
-	health: 100,
-	level: 1,
-	crit: 0,
-	strength: 0,
-	block: 0,
-	isElite: false,
-	initiative: 0,
-	dodge: 0,
-	defense: {
-		armor: 0
-	},
-	weapon: '',
-	offense: {
-		weapon: 0
-	}
-}
+var orc = require('./mobs/orc');
+orc = orc.orc;
+
+var weapons = require('./weapons/weapons');
+weapons = weapons.weapons;
 
 function checkWaveCounter() {
 	if (world.waveCounter >= 10) { // this is the number of mobs per wave
@@ -73,12 +30,6 @@ function checkWaveCounter() {
 		world.waveCounter = 0; // reset counter to 1
 	}
 }
-
-var weapons = [
-    'sword',
-    'axe',
-	'spiked club'
-];
 
 var getRandomWeapon = Math.floor(Math.random()*weapons.length);
 
