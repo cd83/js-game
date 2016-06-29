@@ -5,67 +5,24 @@
 // - experience process to level up player
 // - split out files
 
-var world = {
-   clockInterval: 000,
-   rollMin: 0,
-   rollMax: 100,
-   xpLevelUp: 1000,
-   tickCount: 0,
-   waveCounter: 0,
-   wave: 1
-};
+var world = require('./world/settings');
+world = world.settings;
 
 var inBattle = false;
 var battleCounter = 0;
 
-var stats = {
-	eliteKills: 0,
-	kills: 0,
-	attacks: 0,
-	defended: 0,
-	blocks: 0,
-	misses: 0,
-    crits: 0,
-	soulSiphon: 0
-};
+var stats = require('./stats/settings');
+stats = stats.settings;
 
 // our hero
-var hero = {
-	name: "Foff",
-	health: 100,
-	level: 1,
-	xp: 0,
-	crit: 5,
-	strength: 10,
-	block: 50,
-	initiative: 10,
-	defense: {
-		armor: 10
-	},
-	weapon: "Totally Rad Sword",
-	offense: {
-		weapon: 10
-	}
-};
+var hero = require('./heroes/foff');
+hero = hero.hero;
 
-var orc = {
-	name: "Orc",
-	health: 100,
-	level: 1,
-	crit: 0,
-	strength: 0,
-	block: 0,
-	isElite: false,
-	initiative: 0,
-	dodge: 0,
-	defense: {
-		armor: 0
-	},
-	weapon: '',
-	offense: {
-		weapon: 0
-	}
-}
+var orc = require('./mobs/orc');
+orc = orc.orc;
+
+var weapons = require('./weapons/weapons');
+weapons = weapons.weapons;
 
 function checkWaveCounter() {
 	if (world.waveCounter >= 10) { // this is the number of mobs per wave
@@ -73,12 +30,6 @@ function checkWaveCounter() {
 		world.waveCounter = 0; // reset counter to 1
 	}
 }
-
-var weapons = [
-    'sword',
-    'axe',
-	'spiked club'
-];
 
 var getRandomWeapon = Math.floor(Math.random()*weapons.length);
 
@@ -102,22 +53,7 @@ function tickEvent() {
    	  battleCounter += 1;
 
       if (battleCounter == 1) {
-	//   console.log('********************************************');
-	//   console.log(hero.name + "'s stats are:");
-	//   console.log (hero);
-   	//   console.log('********************************************');
-   	//   console.log(' ');
-   	//   console.log('********************************************');
-	//   console.log('An ' + mob[0].name + " attacks from the shadows!" );
-   	//   console.log("Enemy stats:");
-	//   console.log (mob[0]);
-   	//   console.log('********************************************');
-   	//   console.log(' ');
-	//   console.log("Quest stats: " + stats.kills + " kills, " + stats.crits + " crits." );
-	//   console.log(' ');
-	//   console.log("Enemies remaining this wave: " + (10 - world.waveCounter));
-	//   console.log("Current wave: " + world.wave);
-	//   console.log(' ');
+
       }
 
       // **************
@@ -125,12 +61,11 @@ function tickEvent() {
       // **************
 
 	  attack(mob[0], hero)
+
       console.log(' ');
 
    } else {
    	  // reset the counters
-   	  // console.log(hero.name + ': ' + 'Our hero, ' + hero.name + ', is continuing his quest and is out of battle.');
-   	  // console.log(' ');
    	  battleCounter = 0;
    }
 
@@ -143,28 +78,7 @@ function tickEvent() {
 		 console.log('world.tickCount: ', world.tickCount)
    	  console.log('********************************************');
    } else if (hero.health >= 150) {
-		console.log(' ');
-		console.log('*****************************');
-		console.log('****  SOUL SIPHON CAST!  ****')
-		console.log('*****************************');
-		console.log(' ');
-   	  console.log(hero.name + ': ' + 'The soul siphon has been cast to remove 40 health points from our hero but the reward is an additonal Crit point.');
-   	  hero.health -= 40;
-
-   	  if (hero.crit <= 25) {
-   	  	 hero.crit +=  1;
-   	  } else {
-   	  	// crit is too high.  Roll additional life damage.
-   	  	var additionalSoulSiphonDamage = roll(5, 12);
-   	  	console.log(hero.name + ': ' + 'Soul Siphon has hit +' + additionalSoulSiphonDamage);
-   	  	hero.health -= additionalSoulSiphonDamage;
-   	  	console.log(hero.name + ' has ' + hero.health + ' health remaining.');
-   	  	var critToRemove = roll(5, 12);
-   	  	console.log(hero.name + ': ' + 'A lightning strike from the gods has removed +' + critToRemove + ' critical strike points from our hero.');
-   	  	hero.crit -= critToRemove;
-   	  }
-   	  stats.soulSiphon += 1;
-   	  console.log('********************************************');
+	   castSoulSiphon(hero, stats);
    }
 
    if (mob.length == 0) {
@@ -172,9 +86,8 @@ function tickEvent() {
 		
    	  // reset this value
    	  orc.isElite = false;
- 
-   	  mob.push(new spawn(orc));
-	//   console.log('********************************************');
+	  mob.push(new spawn(orc));
+
 	  console.log(hero.name + "'s stats are:");
 	  console.log (hero);
    	  console.log('********************************************');
@@ -195,33 +108,29 @@ function tickEvent() {
    	   // *********** did the enemy die? **********
 	   if (mob[0].health <= 0 && hero.health > 0) {
 	   	  stats.kills += 1;
+		  hero.xp += mob[0].xp; // we add the xp value of the mob to the total xp of the hero
+		  
+	   	  console.log('Our hero, ' + hero.name + ', killed ' + mob[0].name + '!  Adding to the total body count of ' + stats.kills);
+	   	  logHealth(hero.name);
+	   	  console.log(' ');
+
 		  world.waveCounter += 1;
 	   	  console.log(mob[0].name + ' has been slain!');
 		  console.log(' ')
 
-	   	//   console.log('Our hero, ' + hero.name + ', has gained +10 by feasting on the blood of ' + mob[0].name);
-		//   hero.health += 10;
-		// didn't want to lose this so just commented it out for now
-		//   if (mob[0].isElite == true ) { 
-		// 	   	  	stats.eliteKills += 1 
-		// 	   	  	//console.log(hero.name + ': ' + 'Our hero, ' + hero.name + ', has gained +25 by feasting on the blood of ' + mob[0].name + ' Elite');
-					
-		// 		  	// hero.health += 25;
-		// 	   	  } else { 
-		// 	   	  	//console.log(hero.name + ': ' + 'Our hero, ' + hero.name + ', has gained +10 by feasting on the blood of ' + mob[0].name);
-		// 		  	// hero.health += 10;  	
-		// 	   	  }
-
-		// 	   	  console.log('Our hero, ' + hero.name + ', killed ' + mob[0].name + '!  Adding to the total body count of ' + stats.kills);
-		// 	   	  logHealth(hero.name);
-		// 	   	  console.log(' ');
-	
 	   	  mob.splice(0, 1);
 	   	  inBattle = false;
 	   }
    }
 }
 
+// the roll function exists on line 180
+// check out the getRandom function on line 177
+// not removing because this is being used but one roll() takes in min, max
+// the other takes in a stat
+function roll(min, max){
+   return Math.floor(Math.random() * (max - min + 1) + min); 
+}
 
 // initialize the world clock
 worldClock();
@@ -263,18 +172,14 @@ function spawn(enemy) {
 	enemy.defense.armor = getRandom(min,max);
 	enemy.offense.weapon = getRandom(min,max);
 	enemy.weapon = weapons[getRandomWeapon];
+	var mobXP = getMobXP(); // we use the getMobXP function to calc the xp value of the mob
+	enemy.xp = mobXP;
 	return enemy 
 }
 
 function getRandom(min, max) {
 	return Math.floor(Math.random() * (max - min) + min);
 }
-
-// noticed this is different, don't know the deal, commented out for now
-// function roll(min, max){
-//    return Math.floor(Math.random() * (max - min + 1) + min); 
-// }
-
 
 function roll(stat){
 	if ( stat >= getRandom(1,100) ) {
@@ -309,6 +214,7 @@ function attack(attacker, defender) {
 	}
 	else if ( defenderRoll > attackerRoll ) { // if defender rolls higher
 		damage = getDamage(defender,defenderRoll,attacker,attackerRoll); // this should work but since it doesn't I'm putting the stuff from inside the function here outside of the function 
+		
 		if ( roll(defender.crit) ) { // check for crit
 			damage = (damage + defender.crit) * 2
 			logDamage(defender,attacker,'crit',damage)
@@ -341,8 +247,8 @@ function increaseStatCount(who, stat) {
 				break;
 			case 'crits': 
 				stats.crits+= 1;
-				hero.health += 20;
-				console.log(hero.name + "'s health increased by +20! Because he CRIT THAT BEYOTCH.")
+				hero.health += 8;
+				console.log(hero.name + "'s health increased by +8! Because he CRIT THAT BEYOTCH.")
 				break;
 			case 'attacks': stats.attacks += 1;
 				break;
@@ -378,3 +284,40 @@ function logDamage(whoIsHitting, whoIsGettingHit, typeOfHit, damage){
 	}
 }
 
+function castSoulSiphon(hero, stats) {
+	  console.log(' ');
+	  console.log('*****************************');
+	  console.log('****  SOUL SIPHON CAST!  ****')
+	  console.log('*****************************');
+	  console.log(' ');
+   	  console.log(hero.name + ': ' + 'The soul siphon has been cast to remove 40 health points from our hero but the reward is an additonal Crit point.');
+   	  hero.health -= 40;
+
+
+   	  if (hero.crit <= 25) {
+   	  	 hero.crit +=  1;
+   	  } else {
+   	  	// crit is too high.  Roll additional life damage.
+   	  	var additionalSoulSiphonDamage = roll(5, 12);
+   	  	console.log(hero.name + ': ' + 'Soul Siphon has hit +' + additionalSoulSiphonDamage);
+   	  	hero.health -= additionalSoulSiphonDamage;
+   	  	console.log(hero.name + ' has ' + hero.health + ' health remaining.');
+   	  	var critToRemove = roll(5, 12);
+   	  	console.log(hero.name + ': ' + 'A lightning strike from the gods has removed +' + critToRemove + ' critical strike points from our hero.');
+   	  	hero.crit -= critToRemove;
+   	  }
+   	  stats.soulSiphon += 1;
+   	  console.log('********************************************');
+}
+
+// this function calcs xp that the mob grants upon death
+function getMobXP() {
+	var mobXP = world.wave * ( world.wave * 10)
+	return mobXP
+}
+
+// this will be the function that has all the logic for leveling up the player
+function levelUp() {
+	// the calculation is:
+	// hero.level * 50 * ( hero.level * 2 )
+}
