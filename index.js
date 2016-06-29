@@ -178,36 +178,6 @@ function spawn(enemy) {
 		enemy.isElite = false;
 		//enemy.name = orc.name;
 	}
-
-	enemy.health = roll(15 * eliteMultiplier, 40 * eliteMultiplier);
-	enemy.strength = roll(0, 5 * eliteMultiplier);
-	enemy.dodge = roll(0, 5 * eliteMultiplier);
-	enemy.crit = roll(1, 8 * eliteMultiplier);
-}
-
-
-// initialize the world clock
-worldClock();
-
-function spawn(enemy) {
-	var eliteRoll = roll(1, 200);
-	var eliteMultiplier = 1;
-
-	if (eliteRoll > 182 && world.tickCount > 100) {
-		eliteMultiplier = 2;
-        //enemy.name += ' Elite';
-		console.log(' ');
-		console.log('***************************');
-		console.log('****  ELITE SPAWNED!!  ****')
-		console.log('***************************');
-		console.log(' ');
-		enemy.isElite = true;
-	} else {
-		// added because of strange bug
-		// variables are leaking. :-(
-		enemy.isElite = false;
-		//enemy.name = orc.name;
-	}
 	
 	enemy.health = roll(15 * eliteMultiplier, 40 * eliteMultiplier);
 	enemy.strength = roll(0, 5 * eliteMultiplier);
@@ -245,21 +215,6 @@ function roll(stat){
 	} else {
 		return false
 	}
-}
-
-// initialize the world clock
-worldClock();
-
-function spawn(enemy) {
-	enemy.health = getRandom(10, 35);
-	enemy.initiative = getRandom(1, 10);
-	enemy.strength = getRandom(2, 10);
-	enemy.dodge = getRandom(2, 8);
-	enemy.crit = getRandom(2, 8);
-	enemy.defense.armor = getRandom(2,8);
-	enemy.offense.weapon = getRandom(2,8);
-	enemy.weapon = weapons[getRandomWeapon];
-	return enemy 
 }
 
 function attack(attacker, defender) {
