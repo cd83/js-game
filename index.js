@@ -78,7 +78,7 @@ function tickEvent() {
    	  console.log('world.tickCount: ', world.tickCount)
    	  console.log('********************************************');
    } else if (hero.health >= 150) {
-   	  castSoulSiphon(hero, stats);
+	   castSoulSiphon(hero, stats);
    }
 
    if (mob.length == 0) {
@@ -108,7 +108,7 @@ function tickEvent() {
    	   // *********** did the enemy die? **********
 	   if (mob[0].health <= 0 && hero.health > 0) {
 	   	  stats.kills += 1;
-
+		  hero.xp += mob[0].xp; // we add the xp value of the mob to the total xp of the hero
 	   	  console.log('Our hero, ' + hero.name + ', killed ' + mob[0].name + '!  Adding to the total body count of ' + stats.kills);
 	   	  logHealth(hero.name);
 	   	  console.log(' ');
@@ -116,12 +116,18 @@ function tickEvent() {
 		  world.waveCounter += 1;
 	   	  console.log(mob[0].name + ' has been slain!');
 		  console.log(' ')
-	
+
 	   	  mob.splice(0, 1);
 	   	  inBattle = false;
 	   	}
     }
 }
+
+
+// the roll function exists on line 180
+// check out the getRandom function on line 177
+// not removing because this is being used but one roll() takes in min, max
+// the other takes in a stat
 
 function roll(min, max){
    return Math.floor(Math.random() * (max - min + 1) + min); 
@@ -167,6 +173,8 @@ function spawn(enemy) {
 	enemy.defense.armor = getRandom(min,max);
 	enemy.offense.weapon = getRandom(min,max);
 	enemy.weapon = weapons[getRandomWeapon];
+	var mobXP = getMobXP(); // we use the getMobXP function to calc the xp value of the mob
+	enemy.xp = mobXP;
 	return enemy 
 }
 
@@ -278,11 +286,11 @@ function logDamage(whoIsHitting, whoIsGettingHit, typeOfHit, damage){
 }
 
 function castSoulSiphon(hero, stats) {
-		console.log(' ');
-		console.log('*****************************');
-		console.log('****  SOUL SIPHON CAST!  ****')
-		console.log('*****************************');
-		console.log(' ');
+	  console.log(' ');
+	  console.log('*****************************');
+	  console.log('****  SOUL SIPHON CAST!  ****')
+	  console.log('*****************************');
+	  console.log(' ');
    	  console.log(hero.name + ': ' + 'The soul siphon has been cast to remove 40 health points from our hero but the reward is an additonal Crit point.');
    	  hero.health -= 40;
 
@@ -301,4 +309,16 @@ function castSoulSiphon(hero, stats) {
    	  }
    	  stats.soulSiphon += 1;
    	  console.log('********************************************');
+}
+
+// this function calcs xp that the mob grants upon death
+function getMobXP() {
+	var mobXP = world.wave * ( world.wave * 10)
+	return mobXP
+}
+
+// this will be the function that has all the logic for leveling up the player
+function levelUp() {
+	// the calculation is:
+	// hero.level * 50 * ( hero.level * 2 )
 }
