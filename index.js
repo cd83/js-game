@@ -66,8 +66,6 @@ function tickEvent() {
 
    } else {
    	  // reset the counters
-   	  // console.log(hero.name + ': ' + 'Our hero, ' + hero.name + ', is continuing his quest and is out of battle.');
-   	  // console.log(' ');
    	  battleCounter = 0;
    }
 
@@ -111,16 +109,6 @@ function tickEvent() {
 	   if (mob[0].health <= 0 && hero.health > 0) {
 	   	  stats.kills += 1;
 
-	   	  if (mob[0].isElite == true ) { 
-	   	  	stats.eliteKills += 1 
-	   	  	//console.log(hero.name + ': ' + 'Our hero, ' + hero.name + ', has gained +25 by feasting on the blood of ' + mob[0].name + ' Elite');
-		  	
-		  	// hero.health += 25;
-	   	  } else { 
-	   	  	//console.log(hero.name + ': ' + 'Our hero, ' + hero.name + ', has gained +10 by feasting on the blood of ' + mob[0].name);
-		  	// hero.health += 10;  	
-	   	  }
-
 	   	  console.log('Our hero, ' + hero.name + ', killed ' + mob[0].name + '!  Adding to the total body count of ' + stats.kills);
 	   	  logHealth(hero.name);
 	   	  console.log(' ');
@@ -128,23 +116,6 @@ function tickEvent() {
 		  world.waveCounter += 1;
 	   	  console.log(mob[0].name + ' has been slain!');
 		  console.log(' ')
-
-	   	//   console.log('Our hero, ' + hero.name + ', has gained +10 by feasting on the blood of ' + mob[0].name);
-		//   hero.health += 10;
-		// didn't want to lose this so just commented it out for now
-		//   if (mob[0].isElite == true ) { 
-		// 	   	  	stats.eliteKills += 1 
-		// 	   	  	//console.log(hero.name + ': ' + 'Our hero, ' + hero.name + ', has gained +25 by feasting on the blood of ' + mob[0].name + ' Elite');
-					
-		// 		  	// hero.health += 25;
-		// 	   	  } else { 
-		// 	   	  	//console.log(hero.name + ': ' + 'Our hero, ' + hero.name + ', has gained +10 by feasting on the blood of ' + mob[0].name);
-		// 		  	// hero.health += 10;  	
-		// 	   	  }
-
-		// 	   	  console.log('Our hero, ' + hero.name + ', killed ' + mob[0].name + '!  Adding to the total body count of ' + stats.kills);
-		// 	   	  logHealth(hero.name);
-		// 	   	  console.log(' ');
 	
 	   	  mob.splice(0, 1);
 	   	  inBattle = false;
@@ -155,36 +126,6 @@ function tickEvent() {
 function roll(min, max){
    return Math.floor(Math.random() * (max - min + 1) + min); 
 }
-
-// initialize the world clock
-worldClock();
-
-function spawn(enemy) {
-	var eliteRoll = roll(1, 200);
-	var eliteMultiplier = 1;
-
-	if (eliteRoll > 182 && world.tickCount > 100) {
-		eliteMultiplier = 2;
-        //enemy.name += ' Elite';
-		console.log(' ');
-		console.log('***************************');
-		console.log('****  ELITE SPAWNED!!  ****')
-		console.log('***************************');
-		console.log(' ');
-		enemy.isElite = true;
-	} else {
-		// added because of strange bug
-		// variables are leaking. :-(
-		enemy.isElite = false;
-		//enemy.name = orc.name;
-	}
-
-	enemy.health = roll(15 * eliteMultiplier, 40 * eliteMultiplier);
-	enemy.strength = roll(0, 5 * eliteMultiplier);
-	enemy.dodge = roll(0, 5 * eliteMultiplier);
-	enemy.crit = roll(1, 8 * eliteMultiplier);
-}
-
 
 // initialize the world clock
 worldClock();
@@ -233,33 +174,12 @@ function getRandom(min, max) {
 	return Math.floor(Math.random() * (max - min) + min);
 }
 
-// noticed this is different, don't know the deal, commented out for now
-// function roll(min, max){
-//    return Math.floor(Math.random() * (max - min + 1) + min); 
-// }
-
-
 function roll(stat){
 	if ( stat >= getRandom(1,100) ) {
 		return true   
 	} else {
 		return false
 	}
-}
-
-// initialize the world clock
-worldClock();
-
-function spawn(enemy) {
-	enemy.health = getRandom(10, 35);
-	enemy.initiative = getRandom(1, 10);
-	enemy.strength = getRandom(2, 10);
-	enemy.dodge = getRandom(2, 8);
-	enemy.crit = getRandom(2, 8);
-	enemy.defense.armor = getRandom(2,8);
-	enemy.offense.weapon = getRandom(2,8);
-	enemy.weapon = weapons[getRandomWeapon];
-	return enemy 
 }
 
 function attack(attacker, defender) {
