@@ -80,29 +80,7 @@ function tickEvent() {
    	  console.log('world.tickCount: ', world.tickCount)
    	  console.log('********************************************');
    } else if (hero.health >= 150) {
-		console.log(' ');
-		console.log('*****************************');
-		console.log('****  SOUL SIPHON CAST!  ****')
-		console.log('*****************************');
-		console.log(' ');
-   	  console.log(hero.name + ': ' + 'The soul siphon has been cast to remove 40 health points from our hero but the reward is an additonal Crit point.');
-   	  hero.health -= 40;
-
-
-   	  if (hero.crit <= 25) {
-   	  	 hero.crit +=  1;
-   	  } else {
-   	  	// crit is too high.  Roll additional life damage.
-   	  	var additionalSoulSiphonDamage = roll(5, 12);
-   	  	console.log(hero.name + ': ' + 'Soul Siphon has hit +' + additionalSoulSiphonDamage);
-   	  	hero.health -= additionalSoulSiphonDamage;
-   	  	console.log(hero.name + ' has ' + hero.health + ' health remaining.');
-   	  	var critToRemove = roll(5, 12);
-   	  	console.log(hero.name + ': ' + 'A lightning strike from the gods has removed +' + critToRemove + ' critical strike points from our hero.');
-   	  	hero.crit -= critToRemove;
-   	  }
-   	  stats.soulSiphon += 1;
-   	  console.log('********************************************');
+   	  castSoulSiphon(hero, stats);
    }
 
    if (mob.length == 0) {
@@ -379,3 +357,28 @@ function logDamage(whoIsHitting, whoIsGettingHit, typeOfHit, damage){
 	}
 }
 
+function castSoulSiphon(hero, stats) {
+		console.log(' ');
+		console.log('*****************************');
+		console.log('****  SOUL SIPHON CAST!  ****')
+		console.log('*****************************');
+		console.log(' ');
+   	  console.log(hero.name + ': ' + 'The soul siphon has been cast to remove 40 health points from our hero but the reward is an additonal Crit point.');
+   	  hero.health -= 40;
+
+
+   	  if (hero.crit <= 25) {
+   	  	 hero.crit +=  1;
+   	  } else {
+   	  	// crit is too high.  Roll additional life damage.
+   	  	var additionalSoulSiphonDamage = roll(5, 12);
+   	  	console.log(hero.name + ': ' + 'Soul Siphon has hit +' + additionalSoulSiphonDamage);
+   	  	hero.health -= additionalSoulSiphonDamage;
+   	  	console.log(hero.name + ' has ' + hero.health + ' health remaining.');
+   	  	var critToRemove = roll(5, 12);
+   	  	console.log(hero.name + ': ' + 'A lightning strike from the gods has removed +' + critToRemove + ' critical strike points from our hero.');
+   	  	hero.crit -= critToRemove;
+   	  }
+   	  stats.soulSiphon += 1;
+   	  console.log('********************************************');
+}
