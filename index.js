@@ -5,23 +5,23 @@
 // - experience process to level up player
 // - split out files
 
-var world = require('./world/settings');
+var world = require('./engine/world/settings');
 world = world.settings;
 
 var inBattle = false;
 var battleCounter = 0;
 
-var stats = require('./stats/settings');
+var stats = require('./engine/stats');
 stats = stats.settings;
 
 // our hero
-var hero = require('./heroes/foff');
+var hero = require('./engine/sprites/heroes/foff');
 hero = hero.hero;
 
-var orc = require('./mobs/orc');
+var orc = require('./engine/sprites/mobs/orc');
 orc = orc.orc;
 
-var weapons = require('./weapons/weapons');
+var weapons = require('./engine/objects/weapons/weapons');
 weapons = weapons.weapons;
 
 function checkWaveCounter() {
